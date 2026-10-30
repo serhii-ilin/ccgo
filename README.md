@@ -62,14 +62,28 @@ Requires the `claude` CLI, plus `curl` and `jq` or `python3` for the model list.
 
 ## Other providers (optional)
 
-`ccgo env <name>` prints `export` lines for other Anthropic-compatible providers
-(`zai`, `nim`, `deepseek-or`, `qwen-or`, `minimax-m2`). Keys are read from `ZAI_API_KEY`,
-`NVIDIA_API_KEY`, `OPENROUTER_API_KEY` and `MINIMAX_API_KEY`:
+`ccgo env <name>` prints `export` lines that point Claude Code at another Anthropic-compatible
+provider. Pass them through `eval` so they apply to your current shell, then run `claude`:
 
 ```sh
 export ZAI_API_KEY=...
-eval "$(ccgo env zai)" && claude
+eval "$(ccgo env zai)"
+claude
 ```
+
+| Name | Provider | Key variable |
+|---|---|---|
+| `zai` | Z.ai (GLM-5.1) | `ZAI_API_KEY` |
+| `nim` | NVIDIA NIM (GLM-5.1) | `NVIDIA_API_KEY` |
+| `deepseek-or` | OpenRouter, DeepSeek V4 | `OPENROUTER_API_KEY` |
+| `qwen-or` | OpenRouter, Qwen 3.6 | `OPENROUTER_API_KEY` |
+| `minimax-m2` | MiniMax M2 | `MINIMAX_API_KEY` |
+
+- If the key variable is unset, `ccgo env` prints an error and exports nothing.
+- The variables last until the terminal is closed. To undo them in the same shell:
+  `unset ANTHROPIC_BASE_URL ANTHROPIC_AUTH_TOKEN`.
+- Running `ccgo env zai` without `eval` prints the exports, including your key, so don't share that output.
+- This is separate from plain `ccgo`, which uses OpenCode Go and leaves your shell untouched.
 
 ## Security
 
