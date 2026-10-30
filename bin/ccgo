@@ -25,7 +25,7 @@
 # Single self-contained executable. Install with install.sh or Homebrew (see README).
 # The API key is read from OPENCODE_API_KEY (or prompted for); never hardcode it.
 
-CCGO_VERSION="0.2.0"
+CCGO_VERSION="0.2.1"
 
 # Live model catalog from the OpenCode Go API (public, no key needed).
 # Cached for an hour; override with CCGO_MODELS_URL / CCGO_MODELS_TTL.
@@ -133,6 +133,7 @@ ccgo_env() {
     printf 'export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1\n'
     [ -n "$model" ] && printf 'export ANTHROPIC_MODEL=%q\n' "$model"
     printf 'export ANTHROPIC_DEFAULT_OPUS_MODEL=%q\n' "$opus"
+    printf 'export ANTHROPIC_DEFAULT_FABLE_MODEL=%q\n' "$opus"
     printf 'export ANTHROPIC_DEFAULT_SONNET_MODEL=%q\n' "$sonnet"
     printf 'export ANTHROPIC_DEFAULT_HAIKU_MODEL=%q\n' "$haiku"
     [ -n "$sub" ] && printf 'export CLAUDE_CODE_SUBAGENT_MODEL=%q\n' "$sub"
@@ -144,6 +145,7 @@ ccgo() {
     local main_model=""
     local fast_model=""
     local opus_model=""
+    local fable_model=""
     local sonnet_model=""
     local haiku_model=""
     local subagent_model=""
@@ -226,6 +228,7 @@ EXAMPLES
 
 OVERRIDES
   CCGO_OPUS_MODEL
+  CCGO_FABLE_MODEL   (defaults to the Opus model)
   CCGO_SONNET_MODEL
   CCGO_HAIKU_MODEL
   CCGO_SUBAGENT_MODEL
@@ -280,6 +283,7 @@ EOF
 
     # Model mappings.
     opus_model="${CCGO_OPUS_MODEL:-$main_model}"
+    fable_model="${CCGO_FABLE_MODEL:-$opus_model}"
     sonnet_model="${CCGO_SONNET_MODEL:-$main_model}"
     haiku_model="${CCGO_HAIKU_MODEL:-$fast_model}"
 
@@ -301,6 +305,7 @@ EOF
     printf 'Preset:     %s\n' "$preset"
     printf 'Main:       %s\n' "$main_model"
     printf 'Opus:       %s\n' "$opus_model"
+    printf 'Fable:      %s\n' "$fable_model"
     printf 'Sonnet:     %s\n' "$sonnet_model"
     printf 'Haiku:      %s\n' "$haiku_model"
     printf 'Subagents:  %s\n' "$subagent_model"
@@ -325,6 +330,7 @@ EOF
 
         # Model aliases.
         export ANTHROPIC_DEFAULT_OPUS_MODEL="$opus_model"
+        export ANTHROPIC_DEFAULT_FABLE_MODEL="$fable_model"
         export ANTHROPIC_DEFAULT_SONNET_MODEL="$sonnet_model"
         export ANTHROPIC_DEFAULT_HAIKU_MODEL="$haiku_model"
 

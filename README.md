@@ -52,7 +52,7 @@ ccgo list             # show presets
 ccgo deepseek -p "Review this project"   # extra args go to claude
 ```
 
-Overrides: `CCGO_OPUS_MODEL`, `CCGO_SONNET_MODEL`, `CCGO_HAIKU_MODEL`, `CCGO_SUBAGENT_MODEL`, `CCGO_CONTEXT_TOKENS`.
+Overrides: `CCGO_OPUS_MODEL`, `CCGO_FABLE_MODEL` (defaults to Opus), `CCGO_SONNET_MODEL`, `CCGO_HAIKU_MODEL`, `CCGO_SUBAGENT_MODEL`, `CCGO_CONTEXT_TOKENS`.
 
 The model list and each model's context window come from the public OpenCode Go
 `/v1/models` endpoint (no key needed), cached for an hour in `~/.cache/ccgo`
