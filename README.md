@@ -33,14 +33,20 @@ ccgo minimax
 ccgo qwen
 ccgo kimi
 ccgo haiku
-ccgo custom           # pick model IDs interactively
+ccgo models           # list models live from the OpenCode Go API
+ccgo glm-5.3          # any model id from that list works as a preset
+ccgo custom           # pick main/fast models from the live list
 ccgo list             # show presets
 ccgo deepseek -p "Review this project"   # extra args go to claude
 ```
 
 Overrides: `CCGO_OPUS_MODEL`, `CCGO_SONNET_MODEL`, `CCGO_HAIKU_MODEL`, `CCGO_SUBAGENT_MODEL`, `CCGO_CONTEXT_TOKENS`.
 
-Requires the `claude` CLI.
+The model list and each model's context window come from the public OpenCode Go
+`/v1/models` endpoint (no key needed), cached for an hour in `~/.cache/ccgo`
+(`CCGO_MODELS_TTL` to change). If the API is unreachable, ccgo uses the cache or built-in defaults.
+
+Requires the `claude` CLI, plus `curl` and `jq` or `python3` for the model list.
 
 ## Other providers (optional)
 
