@@ -10,6 +10,7 @@ for the launched session, and your shell environment is left untouched.
 
 ```sh
 brew tap serhii-ilin/ccgo https://github.com/serhii-ilin/ccgo
+brew trust serhii-ilin/ccgo   # newer Homebrew requires trusting third-party taps
 brew install ccgo
 ```
 
