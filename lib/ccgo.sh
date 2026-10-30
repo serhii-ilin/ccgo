@@ -13,6 +13,7 @@
 #   ccgo haiku            Claude Haiku 5.5
 #   ccgo custom           Interactive model selection
 #   ccgo list             Show presets
+#   ccgo --version        Print the version
 #   ccgo models           List models live from the OpenCode Go API
 #   ccgo glm-5.3          Use any model id from that list
 #
@@ -23,6 +24,8 @@
 # Install with install.sh or Homebrew (see README), or source this file from
 # ~/.zshrc / ~/.bashrc to use ccgo as a shell function.
 # The API key is read from OPENCODE_API_KEY (or prompted for); never hardcode it.
+
+CCGO_VERSION="0.1.3"
 
 # Live model catalog from the OpenCode Go API (public, no key needed).
 # Cached for an hour; override with CCGO_MODELS_URL / CCGO_MODELS_TTL.
@@ -148,6 +151,10 @@ ccgo() {
             IFS= read -r fast_model
             fast_model="${fast_model:-$main_model}"
             ;;
+        version|--version|-V)
+            echo "ccgo $CCGO_VERSION"
+            return 0
+            ;;
         models)
             ccgo_models
             return $?
@@ -164,6 +171,7 @@ PRESETS
   kimi       Kimi K3 + Haiku
   haiku      Haiku only
   custom     Interactive selection from the live model list
+  version    Print the ccgo version
   models     Show models available from the OpenCode Go API
   <model-id> Any model id from `ccgo models` (e.g. ccgo glm-5.3)
 

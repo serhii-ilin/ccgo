@@ -44,6 +44,7 @@ ccgo minimax            # MiniMax M3 + M3.1 Flash
 ccgo qwen
 ccgo kimi
 ccgo haiku
+ccgo --version        # print the ccgo version
 ccgo models           # list models live from the OpenCode Go API
 ccgo glm-5.3          # any model id from that list works as a preset
 ccgo custom           # pick main/fast models from the live list
