@@ -9,6 +9,10 @@ jobs:
         run: shellcheck -s bash bin/ccgo install.sh uninstall.sh lib/*.sh || true
       - name: Smoke test
         run: bash bin/ccgo list
+      - name: Version matches formula
+        run: |
+          v=$(sed -n 's/^CCGO_VERSION="\(.*\)"/\1/p' lib/ccgo.sh)
+          grep -q "refs/tags/v$v.tar.gz" Formula/ccgo.rb || { echo "CCGO_VERSION ($v) does not match Formula/ccgo.rb url" >&2; exit 1; }
       - name: No secrets
         run: |
           if grep -rEn 'oc_sk_[A-Za-z0-9]{10,}|nvapi-[A-Za-z0-9_-]{20,}|sk-(or-)?[A-Za-z0-9-]{20,}' --exclude-dir=.git --exclude=ci.yml .; then
