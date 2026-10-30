@@ -40,7 +40,7 @@ export OPENCODE_API_KEY=...   # or omit and ccgo will prompt (input hidden)
 
 ccgo                  # DeepSeek Pro + Flash (default)
 ccgo flash            # DeepSeek Flash only
-ccgo minimax
+ccgo minimax            # MiniMax M3 + M3.1 Flash
 ccgo qwen
 ccgo kimi
 ccgo haiku

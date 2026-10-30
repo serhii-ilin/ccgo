@@ -7,7 +7,7 @@
 #   ccgo                  Default DeepSeek preset
 #   ccgo deepseek         DeepSeek Pro + Flash
 #   ccgo flash            DeepSeek Flash only
-#   ccgo minimax          MiniMax M3
+#   ccgo minimax          MiniMax M3 + M3.1 Flash
 #   ccgo qwen             Qwen3.7 Plus
 #   ccgo kimi             Kimi K3
 #   ccgo haiku            Claude Haiku 5.5
@@ -120,7 +120,7 @@ ccgo() {
             ;;
         minimax)
             main_model="minimax-m3"
-            fast_model="$main_model"
+            fast_model="minimax-m3.1-flash"
             ;;
         qwen)
             main_model="qwen3.7-plus"
@@ -159,7 +159,7 @@ OpenCode Go / Claude Code
 PRESETS
   deepseek   DeepSeek Pro + Flash (default)
   flash      DeepSeek Flash only
-  minimax    MiniMax M3
+  minimax    MiniMax M3 + M3.1 Flash
   qwen       Qwen3.7 Plus + Haiku
   kimi       Kimi K3 + Haiku
   haiku      Haiku only
