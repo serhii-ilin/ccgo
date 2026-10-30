@@ -62,14 +62,13 @@ Requires the `claude` CLI, plus `curl` and `jq` or `python3` for the model list.
 
 ## Other providers (optional)
 
-`lib/providers.sh` has helpers (`set_zai`, `set_minimax`, `set_ds_openrouter`, ...) that export the
-env vars Claude Code needs. They read keys from `ZAI_API_KEY`, `NVIDIA_API_KEY`, `OPENROUTER_API_KEY`
-and `MINIMAX_API_KEY`:
+`ccgo env <name>` prints `export` lines for other Anthropic-compatible providers
+(`zai`, `nim`, `deepseek-or`, `qwen-or`, `minimax-m2`). Keys are read from `ZAI_API_KEY`,
+`NVIDIA_API_KEY`, `OPENROUTER_API_KEY` and `MINIMAX_API_KEY`:
 
 ```sh
-source "$(brew --prefix ccgo)/libexec/providers.sh"   # or ~/.local/share/ccgo/providers.sh
 export ZAI_API_KEY=...
-set_zai && claude
+eval "$(ccgo env zai)" && claude
 ```
 
 ## Security

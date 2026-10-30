@@ -8,11 +8,10 @@ set -euo pipefail
 REPO="serhii-ilin/ccgo"
 REF="${CCGO_REF:-main}"
 PREFIX="${PREFIX:-$HOME/.local}"
-SHARE="$PREFIX/share/ccgo"
 BIN="$PREFIX/bin"
 
 src=""
-if [ -n "${BASH_SOURCE[0]:-}" ] && [ -f "$(dirname "${BASH_SOURCE[0]}")/lib/ccgo.sh" ]; then
+if [ -n "${BASH_SOURCE[0]:-}" ] && [ -f "$(dirname "${BASH_SOURCE[0]}")/bin/ccgo" ]; then
   src="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 else
   command -v curl >/dev/null || { echo "curl is required" >&2; exit 1; }
@@ -21,12 +20,8 @@ else
   src="$tmp"
 fi
 
-mkdir -p "$SHARE" "$BIN"
-install -m 0644 "$src/lib/ccgo.sh" "$SHARE/ccgo.sh"
-install -m 0644 "$src/lib/providers.sh" "$SHARE/providers.sh"
-install -m 0755 "$src/bin/ccgo" "$SHARE/ccgo-bin"
-# The wrapper looks for share/ccgo/ccgo.sh relative to its own prefix.
-ln -sf "$SHARE/ccgo-bin" "$BIN/ccgo"
+mkdir -p "$BIN"
+install -m 0755 "$src/bin/ccgo" "$BIN/ccgo"
 
 echo "Installed ccgo to $BIN/ccgo"
 case ":$PATH:" in

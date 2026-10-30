@@ -2,10 +2,10 @@
 
 ## Versioning rule
 
-Any change to `bin/` or `lib/` that users would receive MUST ship with a version bump. Before
+Any change to `bin/ccgo` that users would receive MUST ship with a version bump. Before
 finishing such a change, remind the user and do the full release:
 
-1. Bump `CCGO_VERSION` in `lib/ccgo.sh` (patch for fixes/preset tweaks, minor for features).
+1. Bump `CCGO_VERSION` in `bin/ccgo` (patch for fixes/preset tweaks, minor for features).
 2. Commit and push, then `git tag vX.Y.Z && git push origin vX.Y.Z`.
 3. `gh release create vX.Y.Z --title vX.Y.Z --notes "..."`.
 4. Update `Formula/ccgo.rb`: the `url` tag and `sha256`

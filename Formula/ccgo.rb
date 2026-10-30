@@ -7,7 +7,6 @@ class Ccgo < Formula
   head "https://github.com/serhii-ilin/ccgo.git", branch: "main"
 
   def install
-    libexec.install "lib/ccgo.sh", "lib/providers.sh"
     bin.install "bin/ccgo"
   end
 
