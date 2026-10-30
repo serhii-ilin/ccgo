@@ -8,6 +8,7 @@ class Ccgo < Formula
 
   def install
     bin.install "bin/ccgo"
+    chmod 0555, bin/"ccgo"
   end
 
   def caveats
