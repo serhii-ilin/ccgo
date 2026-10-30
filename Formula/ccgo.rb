@@ -8,6 +8,9 @@ class Ccgo < Formula
 
   def install
     bin.install "bin/ccgo"
+  end
+
+  def post_install
     chmod 0555, bin/"ccgo"
   end
 
