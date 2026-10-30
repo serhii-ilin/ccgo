@@ -20,7 +20,18 @@ brew install ccgo
 curl -fsSL https://raw.githubusercontent.com/serhii-ilin/ccgo/main/install.sh | bash
 ```
 
-Or from a checkout: `./install.sh` (installs to `~/.local`; override with `PREFIX=`). Remove with `./uninstall.sh`.
+Or from a checkout: `./install.sh` (installs to `~/.local`; override with `PREFIX=`).
+
+`ccgo` is a standalone command, so nothing needs to be sourced from `~/.zshrc` or `~/.bashrc`.
+If you used an older version that was sourced as a shell function (`~/.ccgo.sh`), remove that
+`source` line, otherwise the function shadows the installed command.
+
+**Upgrade / uninstall**
+
+```sh
+brew upgrade ccgo      # or: brew uninstall ccgo
+./uninstall.sh         # script install
+```
 
 ## Usage
 
