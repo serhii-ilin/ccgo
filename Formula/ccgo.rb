@@ -2,7 +2,7 @@ class Ccgo < Formula
   desc "Launch Claude Code against OpenCode Go models (DeepSeek, MiniMax, Qwen, Kimi)"
   homepage "https://github.com/serhii-ilin/ccgo"
   url "https://github.com/serhii-ilin/ccgo/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "PLACEHOLDER"
+  sha256 "e9ed211cfba4f99af1e7f08ca9bc53543aeefe6095e5d02e76bd0cb0990fd7ed"
   license "MIT"
   head "https://github.com/serhii-ilin/ccgo.git", branch: "main"
 
