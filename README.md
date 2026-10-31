@@ -41,7 +41,7 @@ export OPENCODE_API_KEY=...   # or omit and ccgo will prompt (input hidden)
 ccgo                  # DeepSeek Pro + Flash (default)
 ccgo flash            # DeepSeek Flash only
 ccgo minimax            # MiniMax M3 + M3.1 Flash
-ccgo qwen
+ccgo qwen             # Qwen3.7 Plus only
 ccgo kimi
 ccgo muse             # Muse Spark 1.3 Contributor only
 ccgo free             # the free model on Go, used for all model types
