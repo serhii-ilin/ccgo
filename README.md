@@ -43,6 +43,7 @@ ccgo flash            # DeepSeek Flash only
 ccgo minimax            # MiniMax M3 + M3.1 Flash
 ccgo qwen
 ccgo kimi
+ccgo muse             # Muse Spark 1.3 Contributor + Beam Free
 ccgo haiku
 ccgo --version        # print the ccgo version
 ccgo models           # list models live from the OpenCode Go API

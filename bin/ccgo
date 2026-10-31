@@ -25,7 +25,7 @@
 # Single self-contained executable. Install with install.sh or Homebrew (see README).
 # The API key is read from OPENCODE_API_KEY (or prompted for); never hardcode it.
 
-CCGO_VERSION="0.2.2"
+CCGO_VERSION="0.3.0"
 
 # Live model catalog from the OpenCode Go API (public, no key needed).
 # Cached for an hour; override with CCGO_MODELS_URL / CCGO_MODELS_TTL.
@@ -173,6 +173,10 @@ ccgo() {
             main_model="kimi-k3"
             fast_model="claude-haiku-5-5"
             ;;
+        muse)
+            main_model="muse-spark-1.3-contributor"
+            fast_model="beam-free"
+            ;;
         haiku)
             main_model="claude-haiku-5-5"
             fast_model="$main_model"
@@ -213,6 +217,7 @@ PRESETS
   minimax    MiniMax M3 + M3.1 Flash
   qwen       Qwen3.7 Plus + Haiku
   kimi       Kimi K3 + Haiku
+  muse       Muse Spark 1.3 Contributor + Beam Free
   haiku      Haiku only
   custom     Interactive selection from the live model list
   version    Print the ccgo version
