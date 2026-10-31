@@ -25,7 +25,7 @@
 # Single self-contained executable. Install with install.sh or Homebrew (see README).
 # The API key is read from OPENCODE_API_KEY (or prompted for); never hardcode it.
 
-CCGO_VERSION="0.5.0"
+CCGO_VERSION="0.5.1"
 
 # Live model catalog from the OpenCode Go API (public, no key needed).
 # Cached for an hour; override with CCGO_MODELS_URL / CCGO_MODELS_TTL.
@@ -54,18 +54,18 @@ ccgo_models_json() {
     return 1
 }
 
-# Prints one line per chat model:
+# Prints one line per chat model, most expensive first:
 # id<TAB>context<TAB>tools(yes|no)<TAB>name<TAB>in$/M<TAB>out$/M<TAB>cache$/M<TAB>maxout
 ccgo_models_tsv() {
-    local json
+    local json out
     json=$(ccgo_models_json) || return 1
     if command -v jq >/dev/null 2>&1; then
-        printf '%s' "$json" | jq -r '.data[] | select((.type // "chat") == "chat")
+        out=$(printf '%s' "$json" | jq -r '.data[] | select((.type // "chat") == "chat")
             | [.id, (.limit.context // 0), (if .capabilities.tools.supported then "yes" else "no" end),
                (.name // .id), (.cost.text.input.price // "?"), (.cost.text.output.price // "?"),
-               (.cost.text.input.cache.read // "?"), (.limit.output // 0)] | @tsv'
+               (.cost.text.input.cache.read // "?"), (.limit.output // 0)] | @tsv')
     elif command -v python3 >/dev/null 2>&1; then
-        printf '%s' "$json" | python3 -c '
+        out=$(printf '%s' "$json" | python3 -c '
 import json, sys
 for m in json.load(sys.stdin)["data"]:
     if m.get("type", "chat") != "chat":
@@ -75,10 +75,18 @@ for m in json.load(sys.stdin)["data"]:
     inp = text.get("input", {})
     print("\t".join([m["id"], str(m.get("limit", {}).get("context", 0)), tools, m.get("name", m["id"]),
         str(inp.get("price", "?")), str(text.get("output", {}).get("price", "?")),
-        str(inp.get("cache", {}).get("read", "?")), str(m.get("limit", {}).get("output", 0))]))'
+        str(inp.get("cache", {}).get("read", "?")), str(m.get("limit", {}).get("output", 0))]))')
     else
         return 1
     fi
+    [ -n "$out" ] || return 0
+    # Sort by input $/M descending, output $/M as tie-break; unknown prices sort last.
+    printf '%s\n' "$out" | awk -F'\t' '
+        function key(v) {
+            return (v ~ /^[0-9]+(\.[0-9]+)?$/) ? sprintf("%012.6f", v + 0) : "!unknown"
+        }
+        { printf "%s\t%s\t%s\n", key($5), key($6), $0 }' \
+        | sort -t $'\t' -k1,1r -k2,2r | cut -f3-
 }
 
 # Prints the id of a free (zero-priced, tool-capable) chat model from the live
