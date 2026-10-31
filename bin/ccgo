@@ -25,7 +25,7 @@
 # Single self-contained executable. Install with install.sh or Homebrew (see README).
 # The API key is read from OPENCODE_API_KEY (or prompted for); never hardcode it.
 
-CCGO_VERSION="0.4.4"
+CCGO_VERSION="0.5.0"
 
 # Live model catalog from the OpenCode Go API (public, no key needed).
 # Cached for an hour; override with CCGO_MODELS_URL / CCGO_MODELS_TTL.
@@ -54,13 +54,16 @@ ccgo_models_json() {
     return 1
 }
 
-# Prints one line per chat model: id<TAB>context<TAB>tools(yes|no)<TAB>name
+# Prints one line per chat model:
+# id<TAB>context<TAB>tools(yes|no)<TAB>name<TAB>in$/M<TAB>out$/M<TAB>cache$/M<TAB>maxout
 ccgo_models_tsv() {
     local json
     json=$(ccgo_models_json) || return 1
     if command -v jq >/dev/null 2>&1; then
         printf '%s' "$json" | jq -r '.data[] | select((.type // "chat") == "chat")
-            | [.id, (.limit.context // 0), (if .capabilities.tools.supported then "yes" else "no" end), (.name // .id)] | @tsv'
+            | [.id, (.limit.context // 0), (if .capabilities.tools.supported then "yes" else "no" end),
+               (.name // .id), (.cost.text.input.price // "?"), (.cost.text.output.price // "?"),
+               (.cost.text.input.cache.read // "?"), (.limit.output // 0)] | @tsv'
     elif command -v python3 >/dev/null 2>&1; then
         printf '%s' "$json" | python3 -c '
 import json, sys
@@ -68,7 +71,11 @@ for m in json.load(sys.stdin)["data"]:
     if m.get("type", "chat") != "chat":
         continue
     tools = "yes" if m.get("capabilities", {}).get("tools", {}).get("supported") else "no"
-    print("\t".join([m["id"], str(m.get("limit", {}).get("context", 0)), tools, m.get("name", m["id"])]))'
+    text = m.get("cost", {}).get("text", {})
+    inp = text.get("input", {})
+    print("\t".join([m["id"], str(m.get("limit", {}).get("context", 0)), tools, m.get("name", m["id"]),
+        str(inp.get("price", "?")), str(text.get("output", {}).get("price", "?")),
+        str(inp.get("cache", {}).get("read", "?")), str(m.get("limit", {}).get("output", 0))]))'
     else
         return 1
     fi
@@ -102,8 +109,8 @@ print(free[0]["id"] if free else "")')
 ccgo_models() {
     local rows
     rows=$(ccgo_models_tsv) || { echo "Could not fetch model list from OpenCode Go." >&2; return 1; }
-    printf '%-30s %10s  %-5s %s\n' ID CONTEXT TOOLS NAME
-    printf '%s\n' "$rows" | awk -F'\t' '{ printf "%-30s %10s  %-5s %s\n", $1, $2, $3, $4 }'
+    printf '%-30s %10s  %-5s %8s %8s %8s %8s  %s\n' ID CONTEXT TOOLS 'IN$/M' 'OUT$/M' 'CACHE$/M' MAX-OUT NAME
+    printf '%s\n' "$rows" | awk -F'\t' '{ printf "%-30s %10s  %-5s %8s %8s %8s %8s  %s\n", $1, $2, $3, $5, $6, $7, $8, $4 }'
 }
 
 # True if $1 is a model id in the live catalog.
@@ -213,7 +220,7 @@ ccgo() {
         custom)
             local models
             if models=$(ccgo_models_tsv) && [ -n "$models" ]; then
-                printf '%s\n' "$models" | awk -F'\t' '{ printf "  %-30s %10s ctx  tools:%s\n", $1, $2, $3 }'
+                printf '%s\n' "$models" | awk -F'\t' '{ printf "  %-30s %10s ctx  tools:%s  in:%s out:%s cache:%s maxout:%s\n", $1, $2, $3, $5, $6, $7, $8 }'
                 echo
             fi
             printf "Main model ID: "
