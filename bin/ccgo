@@ -25,7 +25,7 @@
 # Single self-contained executable. Install with install.sh or Homebrew (see README).
 # The API key is read from OPENCODE_API_KEY (or prompted for); never hardcode it.
 
-CCGO_VERSION="0.5.1"
+CCGO_VERSION="0.5.2"
 
 # Live model catalog from the OpenCode Go API (public, no key needed).
 # Cached for an hour; override with CCGO_MODELS_URL / CCGO_MODELS_TTL.
@@ -114,11 +114,17 @@ print(free[0]["id"] if free else "")')
     echo "${id:-beam-free}"
 }
 
+# Prints the aligned model table (header plus rows) for TSV rows in "$1".
+ccgo_models_table() {
+    printf '%-30s %10s  %-5s %8s %8s %8s %8s  %s\n' ID CONTEXT TOOLS 'IN$/M' 'OUT$/M' 'CACHE$/M' MAX-OUT NAME
+    [ -n "$1" ] || return 0
+    printf '%s\n' "$1" | awk -F'\t' '{ printf "%-30s %10s  %-5s %8s %8s %8s %8s  %s\n", $1, $2, $3, $5, $6, $7, $8, $4 }'
+}
+
 ccgo_models() {
     local rows
     rows=$(ccgo_models_tsv) || { echo "Could not fetch model list from OpenCode Go." >&2; return 1; }
-    printf '%-30s %10s  %-5s %8s %8s %8s %8s  %s\n' ID CONTEXT TOOLS 'IN$/M' 'OUT$/M' 'CACHE$/M' MAX-OUT NAME
-    printf '%s\n' "$rows" | awk -F'\t' '{ printf "%-30s %10s  %-5s %8s %8s %8s %8s  %s\n", $1, $2, $3, $5, $6, $7, $8, $4 }'
+    ccgo_models_table "$rows"
 }
 
 # True if $1 is a model id in the live catalog.
@@ -228,7 +234,7 @@ ccgo() {
         custom)
             local models
             if models=$(ccgo_models_tsv) && [ -n "$models" ]; then
-                printf '%s\n' "$models" | awk -F'\t' '{ printf "  %-30s %10s ctx  tools:%s  in:%s out:%s cache:%s maxout:%s\n", $1, $2, $3, $5, $6, $7, $8 }'
+                ccgo_models_table "$models"
                 echo
             fi
             printf "Main model ID: "
